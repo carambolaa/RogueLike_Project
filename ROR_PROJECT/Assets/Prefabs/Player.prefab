@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 1758273992741135844}
   - component: {fileID: 1758273992741135847}
   - component: {fileID: 1758273992741135843}
-  - component: {fileID: 1758273992741135865}
+  - component: {fileID: 1949362697455616520}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -146,7 +146,7 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 80
   m_CollisionDetection: 1
---- !u!114 &1758273992741135865
+--- !u!114 &1949362697455616520
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -155,27 +155,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 1758273992741135864}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19aa793fe36ca1f4085cb4ac55e2b806, type: 3}
+  m_Script: {fileID: 11500000, guid: 78e2262c5a1cb4dd6866cc988b1a6a7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerHeight: 2
   groundCheckOffset: 0.2
   ground:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 0
   grounded: 0
-  groundMultiplier: 10
-  airMultiplier: 5
-  moveSpeed: 5
-  runSpeed: 0
-  jumpForce: 0
-  jumpCooldown: 0
-  jumpCount: 0
+  groundMultiplier: 9
+  airMultiplier: 3
+  moveSpeed: 6
+  runSpeed: 9
+  jumpForce: 6
+  jumpCooldown: 0.25
+  jumpCount: 1
   jumpTimes: 0
-  groundDrag: 5
-  airDrag: 3
+  groundDrag: 9
+  airDrag: 0
   isRunning: 0
-  readyToJump: 0
+  readyToJump: 1
   horizontalInput: 0
   verticalInput: 0
   moveDirection: {x: 0, y: 0, z: 0}

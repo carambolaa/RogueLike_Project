@@ -47,6 +47,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     protected float airDrag;
 
+    [Header("PlayerValue")]
+    protected int HP;
+    protected int gold;
+    protected int XP;
+
     [Header("Debug")]
     [SerializeField]
     protected bool isRunning;
@@ -68,6 +73,39 @@ public class PlayerMovement : MonoBehaviour
 
         m_InputSystem = new PlayerInputSystem();
         m_InputSystem.Player.Jump.performed += Jump;
+    }
+
+    private void Start()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        this.groundMultiplier = 9;
+        this.airMultiplier = 3;
+        this.moveSpeed = 6;
+        this.runSpeed = 9;
+        this.jumpForce = 9;
+        this.jumpCooldown = 0.25f;
+        this.groundDrag = 9;
+    }
+
+    protected void UpdateHP(int HP)
+    {
+        this.HP += HP;
+    }
+    
+    public int GetHP()
+    {
+        return this.HP;
+    }
+
+    protected void UpdateGold(int Gold)
+    {
+        this.gold += Gold;
+    }
+
+    public int GetGold()
+    {
+        return this.gold;
     }
 
     protected virtual void Update()
@@ -140,7 +178,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if(readyToJump && grounded)
         {
-            Debug.Log("here");
             readyToJump = false;
             JumpCalculation();
             Invoke("ResetJump", jumpCooldown);
