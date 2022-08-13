@@ -7,13 +7,6 @@ public class TestAbility2 : Abilities
 {
     [SerializeField] private float dashForce;
     [SerializeField] private Transform orientation;
-    private float elapsed;
-
-    private void Start()
-    {
-        cooldown = 3;
-        isCooling = false;
-    }
 
     protected override void Awake()
     {
@@ -21,35 +14,16 @@ public class TestAbility2 : Abilities
         m_PlayerAction.performed += Cast;
     }
 
+    private void Start()
+    {
+        cooldown = 3;
+        isCooling = false;
+    }
+
     private void Update()
     {
         CooldownTimer();
-        Ability_UI(elapsed/3);
-    }
-
-
-    //IEnumerator CooldownTimer()
-    //{
-    //    while(isCooling)
-    //    {
-    //        yield return new WaitForSeconds(cooldown);
-    //        isCooling = false;
-    //    }
-    //    yield return null;
-    //}
-
-    private void CooldownTimer()
-    {
-        if(isCooling)
-        {
-            elapsed += Time.deltaTime;
-            if (elapsed >= cooldown)
-            {
-                elapsed = 0;
-                isCooling = false;
-            }
-
-        }
+        Ability_UI();
     }
 
     private void Cast(InputAction.CallbackContext context)
@@ -58,7 +32,6 @@ public class TestAbility2 : Abilities
         {
             isCooling = true;
             elapsed = 0;
-            //StartCoroutine("CooldownTimer");
             //dash
             Vector3 dashDirection = orientation.transform.forward;
             var temp = GetComponent<Rigidbody>();

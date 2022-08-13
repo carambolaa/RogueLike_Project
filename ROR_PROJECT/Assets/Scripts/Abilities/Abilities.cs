@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Abilities : MonoBehaviour
 {
+    //reference
     [SerializeField]
     protected Image abilityIcon;
     protected enum KeyBind { E, R, Shift, M1, M2}
@@ -13,8 +14,11 @@ public class Abilities : MonoBehaviour
     protected KeyBind key;
     protected PlayerInputSystem m_InputSystem;
     protected InputAction m_PlayerAction;
+
+    //ability properties
     protected float cooldown;
     protected bool isCooling;
+    protected float elapsed;
     protected float damage;
 
 
@@ -52,8 +56,21 @@ public class Abilities : MonoBehaviour
         m_InputSystem.Player.Disable();
     }
 
-    protected virtual void Ability_UI(float elapsed)
+    protected virtual void Ability_UI()
     {
-        abilityIcon.fillAmount = elapsed;
+        abilityIcon.fillAmount = elapsed / cooldown;
+    }
+
+    protected virtual void CooldownTimer()
+    {
+        if (isCooling)
+        {
+            elapsed += Time.deltaTime;
+            if (elapsed >= cooldown)
+            {
+                elapsed = 0;
+                isCooling = false;
+            }
+        }
     }
 }
