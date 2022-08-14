@@ -14,10 +14,9 @@ public class TestCallBack : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.name == "Enemy")
+        if(other.tag == "Enemy")
         {
             enemy = other.transform;
-            Debug.Log(shooter.name);
             shooter.BroadcastMessage("damageDealt", enemy);
         }
     }

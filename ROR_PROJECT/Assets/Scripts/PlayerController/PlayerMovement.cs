@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
 
     //Events
     public event Action OnRecieveDamage;
-    public event Action OnDealDamage;
+    public event Action<Transform> OnDealDamage;
 
     public static PlayerMovement instance { get; private set; }
 
@@ -126,10 +126,10 @@ public class PlayerMovement : MonoBehaviour
         m_InputSystem.Player.Disable();
     }
 
-    public void damageDealt(Transform enemy)
+    private void damageDealt(Transform enemy)
     {
         Debug.Log(enemy.position);
-        OnDealDamage?.Invoke();
+        OnDealDamage?.Invoke(enemy);
     }
 
     public void RecieveDamage(int damage)
