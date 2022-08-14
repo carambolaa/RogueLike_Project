@@ -55,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
 
     //Events
     public event Action OnRecieveDamage;
+    public event Action OnDealDamage;
 
     public static PlayerMovement instance { get; private set; }
 
@@ -123,6 +124,12 @@ public class PlayerMovement : MonoBehaviour
     protected virtual void OnDisable()
     {
         m_InputSystem.Player.Disable();
+    }
+
+    public void damageDealt(Transform enemy)
+    {
+        Debug.Log(enemy.position);
+        OnDealDamage?.Invoke();
     }
 
     public void RecieveDamage(int damage)
