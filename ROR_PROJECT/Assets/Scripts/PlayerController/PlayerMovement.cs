@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     protected Rigidbody m_Rigidbody;
     protected PlayerInputSystem m_InputSystem;
     protected Transform m_Orientation;
+    protected Transform m_Camera;
 
     [Header("Ground Check")]
     [SerializeField]
@@ -85,9 +86,11 @@ public class PlayerMovement : MonoBehaviour
         m_Rigidbody.freezeRotation = true;
 
         m_Orientation = GameObject.Find("Orientation").transform;
+        m_Camera = GameObject.Find("Main Camera").transform;
 
         m_InputSystem = new PlayerInputSystem();
         m_InputSystem.Player.Jump.performed += Jump;
+        m_InputSystem.Player.E.performed += Interact;
     }
 
     private void Start()
@@ -136,6 +139,28 @@ public class PlayerMovement : MonoBehaviour
     {
         this.HP -= damage;
         OnRecieveDamage?.Invoke();
+    }
+
+    private void Interact(InputAction.CallbackContext context)
+    {
+        RaycastHit hit;
+        if(Physics.Raycast(m_Camera.transform.position, m_Camera.forward, out hit, 10f))
+        {
+            if(hit.transform.tag == "item")
+            {
+                Type comp = Type.GetType(hit.transform.name);
+                if (!gameObject.GetComponent(comp) && comp != null)
+                {
+                    gameObject.AddComponent(comp);
+                }
+                Destroy(hit.transform.gameObject);
+            }
+        }
+    }
+
+    private void RemoveCode()
+    {
+        Destroy(GetComponent<BasicItem>());
     }
 
     protected void UpdateHP(int HP)

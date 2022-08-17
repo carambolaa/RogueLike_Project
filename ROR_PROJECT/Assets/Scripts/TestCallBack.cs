@@ -6,6 +6,17 @@ public class TestCallBack : MonoBehaviour
 {
     private Transform shooter;
     private Transform enemy;
+    private float countDown;
+
+    private void Awake()
+    {
+        Invoke("DestroyBullet", 11);
+    }
+
+    private void DestroyBullet()
+    {
+        Destroy(gameObject);
+    }
 
     public void SetShooter(Transform player)
     {

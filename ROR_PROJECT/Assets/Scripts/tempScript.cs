@@ -9,7 +9,7 @@ public class tempScript : MonoBehaviour
         if(other.name == "Player")
         {
             Debug.Log("-10");
-            other.GetComponent<PlayerMovement>().RecieveDamage(10);
+            other.GetComponent<PlayerMovement>()?.RecieveDamage(10);
         }
     }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BasicItem : MonoBehaviour
 {
+    private float burningPeriod = .5f;
+    private float damage = 1;
+
     private void Start()
     {
         PlayerMovement.instance.OnRecieveDamage += Cast;
@@ -18,5 +21,6 @@ public class BasicItem : MonoBehaviour
     private void FeedBack(Transform enemy)
     {
         Debug.Log(enemy + "got hit");
+        enemy.GetComponent<Enemy>().StartBurning(burningPeriod, damage);
     }
 }
