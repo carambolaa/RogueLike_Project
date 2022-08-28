@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
     private float countDown;
     private float Hp = 100;
     private float currentHp;
+    private bool isBurning;
 
     private void Awake()
     {
@@ -18,25 +19,24 @@ public class Enemy : MonoBehaviour
 
     }
 
-    public void StartBurning(float periodTime, float dmg)
+    public float GetHealPercentage()
     {
-        StartCoroutine(Burning(periodTime, dmg));
+        return currentHp / Hp;
     }
 
-    private void RevieveDamage(float dmg)
+    public bool GetIsBurning()
+    {
+        return isBurning;
+    }
+
+    public void SetIsBurning(bool bo)
+    {
+        isBurning = bo;
+    }
+
+    public void RevieveDamage(float dmg)
     {
         currentHp -= dmg;
         Debug.Log(currentHp);
-    }
-
-    private IEnumerator Burning(float periodTime, float dmg)
-    {
-        countDown = 10f;
-        while(countDown >= 0)
-        {
-            countDown -= periodTime;
-            RevieveDamage(dmg);
-            yield return new WaitForSeconds(periodTime);
-        }
     }
 }

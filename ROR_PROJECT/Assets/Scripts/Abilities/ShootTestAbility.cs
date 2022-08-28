@@ -46,7 +46,7 @@ public class ShootTestAbility : Abilities
             //instantiate
             GameObject projectile = Instantiate(throwPrefab, attackPoint.position, cam.rotation);
             //assign shooter
-            projectile.GetComponent<TestCallBack>().SetShooter(transform);
+            projectile.GetComponent<Bullet>().SetShooter(transform);
             //get rigidbody
             Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
             //add force

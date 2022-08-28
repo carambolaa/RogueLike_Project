@@ -2,15 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasicItem : MonoBehaviour
+public class BasicItem : IItem
 {
     private float burningPeriod = .5f;
-    private float damage = 1;
+    private float burningDamage = 1;
 
-    private void Start()
+    private void Awake()
     {
-        PlayerMovement.instance.OnRecieveDamage += Cast;
-        PlayerMovement.instance.OnDealDamage += FeedBack;
+        itemNumber = 1;
+        if(TryGetComponent(out BurningDamageBuffer burn))
+        {
+            burningDamage *= burn.GetDamage();
+        }
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        CharacterManager.Instance.OnRecieveDamage += Cast;
+        CharacterManager.Instance.OnDealDamage += FeedBack;
     }
 
     private void Cast()
@@ -18,9 +28,32 @@ public class BasicItem : MonoBehaviour
         Debug.Log("Player got hit, heal!");
     }
 
-    private void FeedBack(Transform enemy)
+    private void SetBurningDmage(float multiplier)
     {
-        Debug.Log(enemy + "got hit");
-        enemy.GetComponent<Enemy>().StartBurning(burningPeriod, damage);
+        burningDamage *= multiplier;
+    }
+
+    private void FeedBack(Transform enemy, float damage)
+    {
+        var target = enemy.GetComponent<Enemy>();
+        if (target.GetIsBurning())
+        {
+            target.SetIsBurning(false);
+            return;
+        }
+        target.StartCoroutine(Burning(enemy, burningPeriod, burningDamage));
+    }
+
+    private IEnumerator Burning(Transform target, float periodTime, float dmg)
+    {
+        var enemy = target.GetComponent<Enemy>();
+        enemy.SetIsBurning(true);
+        var countDown = 5f;
+        while (countDown >= 0 && enemy.GetIsBurning())
+        {
+            countDown -= periodTime;
+            enemy.RevieveDamage(dmg);
+            yield return new WaitForSeconds(periodTime);
+        }
     }
 }

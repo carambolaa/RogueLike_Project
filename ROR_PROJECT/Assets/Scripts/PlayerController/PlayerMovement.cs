@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     protected PlayerInputSystem m_InputSystem;
     protected Transform m_Orientation;
     protected Transform m_Camera;
+    protected ItemManager m_ItemManager;
 
     [Header("Ground Check")]
     [SerializeField]
@@ -49,15 +50,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     protected float airDrag;
 
-    [Header("PlayerValue")]
-    protected int HP;
-    protected int gold;
-    protected int XP;
-
-    //Events
-    public event Action OnRecieveDamage;
-    public event Action<Transform> OnDealDamage;
-
     public static PlayerMovement instance { get; private set; }
 
     [Header("Debug")]
@@ -87,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
 
         m_Orientation = GameObject.Find("Orientation").transform;
         m_Camera = GameObject.Find("Main Camera").transform;
+        m_ItemManager = GetComponent<ItemManager>();
 
         m_InputSystem = new PlayerInputSystem();
         m_InputSystem.Player.Jump.performed += Jump;
@@ -129,18 +122,6 @@ public class PlayerMovement : MonoBehaviour
         m_InputSystem.Player.Disable();
     }
 
-    private void damageDealt(Transform enemy)
-    {
-        Debug.Log(enemy.position);
-        OnDealDamage?.Invoke(enemy);
-    }
-
-    public void RecieveDamage(int damage)
-    {
-        this.HP -= damage;
-        OnRecieveDamage?.Invoke();
-    }
-
     private void Interact(InputAction.CallbackContext context)
     {
         RaycastHit hit;
@@ -148,39 +129,11 @@ public class PlayerMovement : MonoBehaviour
         {
             if(hit.transform.tag == "item")
             {
-                Type comp = Type.GetType(hit.transform.name);
-                if (!gameObject.GetComponent(comp) && comp != null)
-                {
-                    gameObject.AddComponent(comp);
-                }
-                Destroy(hit.transform.gameObject);
+                var target = hit.transform.gameObject;
+                m_ItemManager.AddItem(target.name);
+                Destroy(target);
             }
         }
-    }
-
-    private void RemoveCode()
-    {
-        Destroy(GetComponent<BasicItem>());
-    }
-
-    protected void UpdateHP(int HP)
-    {
-        this.HP += HP;
-    }
-
-    public int GetHP()
-    {
-        return this.HP;
-    }
-
-    protected void UpdateGold(int Gold)
-    {
-        this.gold += Gold;
-    }
-
-    public int GetGold()
-    {
-        return this.gold;
     }
 
     protected virtual void MyInput()

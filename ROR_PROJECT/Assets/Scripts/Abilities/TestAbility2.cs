@@ -16,7 +16,6 @@ public class TestAbility2 : Abilities
 
     private void Start()
     {
-        cooldown = 3;
         isCooling = false;
     }
 

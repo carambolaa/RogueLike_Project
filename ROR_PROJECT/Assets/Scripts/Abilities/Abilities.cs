@@ -16,6 +16,7 @@ public class Abilities : MonoBehaviour
     protected InputAction m_PlayerAction;
 
     //ability properties
+    [SerializeField]
     protected float cooldown;
     protected bool isCooling;
     protected float elapsed;

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6542691430764367061}
   - component: {fileID: 1814308141109077875}
   - component: {fileID: 9181323937327096613}
-  - component: {fileID: -8181354088821747640}
+  - component: {fileID: 7892879918314786882}
   m_Layer: 0
   m_Name: TestBullet
   m_TagString: Untagged
@@ -95,7 +95,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.7
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &9181323937327096613
 Rigidbody:
@@ -112,8 +112,8 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 3
---- !u!114 &-8181354088821747640
+  m_CollisionDetection: 2
+--- !u!114 &7892879918314786882
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

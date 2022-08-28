@@ -13,7 +13,6 @@ public class TestAbility : Abilities
 
     private void Cast(InputAction.CallbackContext context)
     {
-        GetComponent<PlayerMovement>().BroadcastMessage("UpdateHP", 10);
-        Debug.Log(GetComponent<PlayerMovement>().GetHP());
+        Debug.Log("+10");
     }
 }
