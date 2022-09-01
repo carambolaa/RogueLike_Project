@@ -1,27 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
-    private float countDown;
-    private float Hp = 100;
+    private float baseHp = 200;
     private float currentHp;
     private bool isBurning;
+    [SerializeField] private Slider healthBar;
+    [SerializeField] private Transform canvas;
+    private Transform mainCamera;
+    private Transform player;
 
     private void Awake()
     {
-        currentHp = Hp;
+        currentHp = baseHp;
+        mainCamera = Camera.main.transform;
+        player = GameObject.Find("Player").transform;
     }
 
     private void Start()
     {
+        UpdateHealthBar();
+    }
 
+    private void LateUpdate()
+    {
+        canvas.LookAt(transform.position + -mainCamera.forward);
+        var currentSize = 0.005f * Vector3.Distance(player.position, this.transform.position)/6f;
+        healthBar.transform.localScale = new Vector3(currentSize, currentSize * 1.5f, currentSize);
     }
 
     public float GetHealPercentage()
     {
-        return currentHp / Hp;
+        return currentHp / baseHp;
     }
 
     public bool GetIsBurning()
@@ -37,6 +50,21 @@ public class Enemy : MonoBehaviour
     public void RevieveDamage(float dmg)
     {
         currentHp -= dmg;
+        UpdateHealthBar();
+        if (currentHp <= 0)
+        {
+            Die();
+        }
         Debug.Log(currentHp);
+    }
+
+    private void UpdateHealthBar()
+    {
+        healthBar.value = currentHp / baseHp;
+    }
+
+    public void Die()
+    {
+        Destroy(this.gameObject);
     }
 }

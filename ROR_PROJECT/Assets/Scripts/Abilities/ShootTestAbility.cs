@@ -38,10 +38,17 @@ public class ShootTestAbility : Ability
         readyToThrow = true;
     }
 
+    private void Update()
+    {
+        CooldownTimer();
+        Ability_UI();
+    }
+
     private void Throw(InputAction.CallbackContext context)
     {
         if(readyToThrow && totalThrows > 0)
         {
+            isCooling = true;
             readyToThrow = false;
             //instantiate
             GameObject projectile = Instantiate(throwPrefab, attackPoint.position, cam.rotation);

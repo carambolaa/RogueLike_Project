@@ -4,19 +4,16 @@ using UnityEngine;
 
 public class BasicItem : Item
 {
-    private float burningPeriod = .5f;
+    private float burningPeriod = 1f;
     private float burningDamage = 1;
+    private float burningDamageMultiplier;
+    private Coroutine currentCoroutine;
 
     protected override void Start()
     {
         base.Start();
         CharacterManager.Instance.OnRecieveDamage += Cast;
         CharacterManager.Instance.OnDealDamage += FeedBack;
-
-        if (TryGetComponent(out BurningDamageBuffer burn))
-        {
-            burningDamage *= burn.GetDamage();
-        }
     }
 
     private void Cast()
@@ -24,20 +21,20 @@ public class BasicItem : Item
         Debug.Log("Player got hit, heal!");
     }
 
-    private void SetBurningDmage(float multiplier)
-    {
-        burningDamage *= multiplier;
-    }
-
     private void FeedBack(Transform enemy, float damage)
     {
         var target = enemy.GetComponent<Enemy>();
-        if (target.GetIsBurning())
+        if (currentCoroutine != null)
         {
-            target.SetIsBurning(false);
-            return;
+            target.StopCoroutine(currentCoroutine);
         }
-        target.StartCoroutine(Burning(enemy, burningPeriod, burningDamage));
+        burningDamageMultiplier = CharacterManager.Instance.GetBurningDamageMultiplier();
+        var currentBurningDamage = burningDamage;
+        if (burningDamageMultiplier != 0)
+        {
+            currentBurningDamage *= burningDamageMultiplier;
+        }
+        currentCoroutine = target.StartCoroutine(Burning(enemy, burningPeriod, currentBurningDamage));
     }
 
     private IEnumerator Burning(Transform target, float periodTime, float dmg)

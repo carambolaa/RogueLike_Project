@@ -9,12 +9,13 @@ public class CharacterManager : MonoBehaviour
     private Dictionary<string, int> m_Inventory = new Dictionary<string, int>();
 
     //properties
-    private float maxHp;
+    private float baseHp;
     private float currentHp;
     private float Xp;
     private float Gold;
-    private float playerBaseDamage = 10;
+    private float playerBaseDamage;
     private float playerCurrentDamage;
+    private float burningDamageMultiplier;
     private float extraDamageMultiplier; //crowbar's extra damage
     private float buffDamageMultiplier; //crystal's buff damage
 
@@ -38,7 +39,17 @@ public class CharacterManager : MonoBehaviour
     }
     private void Start()
     {
+        ResetBasicValues();
+    }
+
+    public void ResetBasicValues()
+    {
+        baseHp = 200;
+        currentHp = baseHp;
+        playerBaseDamage = 10;
         playerCurrentDamage = playerBaseDamage;
+        Xp = 0;
+        Gold = 0;
     }
 
     public void AddItem(string itemName)
@@ -107,5 +118,15 @@ public class CharacterManager : MonoBehaviour
     public void SetExtraDamage(float extraDamageMultiplier)
     {
         this.extraDamageMultiplier = extraDamageMultiplier;
+    }
+
+    public void SetBurningDamageMultiplier(float burningDamageMultiplier)
+    {
+        this.burningDamageMultiplier = burningDamageMultiplier;
+    }
+
+    public float GetBurningDamageMultiplier()
+    {
+        return burningDamageMultiplier;
     }
 }

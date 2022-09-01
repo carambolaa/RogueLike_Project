@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class BurningDamageBuffer : Item
 {
-    public float GetDamage()
-    {
-        return itemNumber * 3;
-    }
+    private float burningDamageMultiplier = 3f;
 
-    private void OnDestroy()
+    protected override void ItemNumberUpdate()
     {
-        Debug.Log("minus damage");
+        base.ItemNumberUpdate();
+        CharacterManager.Instance.SetBurningDamageMultiplier(burningDamageMultiplier * itemNumber);
     }
 }
