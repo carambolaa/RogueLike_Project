@@ -2,13 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BurningDamageBuffer : IItem
+public class BurningDamageBuffer : Item
 {
-    private void Awake()
-    {
-        itemNumber = 1;
-    }
-
     public float GetDamage()
     {
         return itemNumber * 3;

@@ -6,8 +6,7 @@ public class Bullet: MonoBehaviour
 {
     private Transform shooter;
     private Transform enemy;
-    private float baseDamage = 20f;
-    private float damageMultiplierBase = 1f;
+    private float damageMultiplierBase = 1.5f;
 
     private void Awake()
     {
@@ -29,7 +28,8 @@ public class Bullet: MonoBehaviour
         if(other.tag == "Enemy")
         {
             enemy = other.transform;
-            shooter.GetComponent<CharacterManager>()?.DealDamage(enemy, baseDamage, damageMultiplierBase);
+            shooter.GetComponent<CharacterManager>()?.DealDamage(enemy, damageMultiplierBase);
+            Destroy(this.gameObject);
         }
     }
 }

@@ -16,7 +16,6 @@ public class PlayerMovement : MonoBehaviour
     protected PlayerInputSystem m_InputSystem;
     protected Transform m_Orientation;
     protected Transform m_Camera;
-    protected ItemManager m_ItemManager;
 
     [Header("Ground Check")]
     [SerializeField]
@@ -50,8 +49,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     protected float airDrag;
 
-    public static PlayerMovement instance { get; private set; }
-
     [Header("Debug")]
     [SerializeField]
     protected bool isRunning;
@@ -66,20 +63,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
-        if(instance != null && instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            instance = this;
-        }
         m_Rigidbody = GetComponent<Rigidbody>();
         m_Rigidbody.freezeRotation = true;
 
         m_Orientation = GameObject.Find("Orientation").transform;
         m_Camera = GameObject.Find("Main Camera").transform;
-        m_ItemManager = GetComponent<ItemManager>();
 
         m_InputSystem = new PlayerInputSystem();
         m_InputSystem.Player.Jump.performed += Jump;
@@ -130,7 +118,7 @@ public class PlayerMovement : MonoBehaviour
             if(hit.transform.tag == "item")
             {
                 var target = hit.transform.gameObject;
-                m_ItemManager.AddItem(target.name);
+                CharacterManager.Instance.AddItem(target.name);
                 Destroy(target);
             }
         }

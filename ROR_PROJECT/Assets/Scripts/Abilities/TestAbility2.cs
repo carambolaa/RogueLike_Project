@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class TestAbility2 : Abilities
+public class TestAbility2 : Ability
 {
     [SerializeField] private float dashForce;
     [SerializeField] private Transform orientation;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class TestAbility : Abilities
+public class TestAbility : Ability
 {
     protected override void Awake()
     {

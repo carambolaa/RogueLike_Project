@@ -2,25 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasicItem : IItem
+public class BasicItem : Item
 {
     private float burningPeriod = .5f;
     private float burningDamage = 1;
-
-    private void Awake()
-    {
-        itemNumber = 1;
-        if(TryGetComponent(out BurningDamageBuffer burn))
-        {
-            burningDamage *= burn.GetDamage();
-        }
-    }
 
     protected override void Start()
     {
         base.Start();
         CharacterManager.Instance.OnRecieveDamage += Cast;
         CharacterManager.Instance.OnDealDamage += FeedBack;
+
+        if (TryGetComponent(out BurningDamageBuffer burn))
+        {
+            burningDamage *= burn.GetDamage();
+        }
     }
 
     private void Cast()

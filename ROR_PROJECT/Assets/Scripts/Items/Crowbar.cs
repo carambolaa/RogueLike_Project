@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Crowbar : IItem
+public class Crowbar : Item
 {
-    private float damageMultiplierBase = 1.75f;
-    private float CalculateExtraDamage(float damage)
+    //item's damage multiplier
+    private const float extraDamageMultiplier = 0.75f;
+
+    protected override void ItemNumberUpdate()
     {
-        return damageMultiplierBase * damage;
+        base.ItemNumberUpdate();
+        CharacterManager.Instance.SetExtraDamage(extraDamageMultiplier * itemNumber);
     }
 }

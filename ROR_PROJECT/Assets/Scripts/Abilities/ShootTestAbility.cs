@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class ShootTestAbility : Abilities
+public class ShootTestAbility : Ability
 {
     [Header("References")]
     private Transform cam;
