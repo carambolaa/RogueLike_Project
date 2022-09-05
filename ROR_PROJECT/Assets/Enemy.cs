@@ -49,13 +49,14 @@ public class Enemy : MonoBehaviour
 
     public void RevieveDamage(float dmg)
     {
+        //Debug.Log(dmg);
         currentHp -= dmg;
         UpdateHealthBar();
         if (currentHp <= 0)
         {
             Die();
         }
-        Debug.Log(currentHp);
+        //Debug.Log(currentHp);
     }
 
     private void UpdateHealthBar()

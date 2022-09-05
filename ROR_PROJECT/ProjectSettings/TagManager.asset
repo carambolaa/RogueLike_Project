@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - item
+  - lootBox
   layers:
   - Default
   - TransparentFX

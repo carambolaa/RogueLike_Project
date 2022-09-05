@@ -15,7 +15,7 @@ public class ShootTestAbility : Ability
     [SerializeField]
     private int totalThrows;
     [SerializeField]
-    private int throwCooldown;
+    private float throwCooldown;
 
     [Header("Throwing")]
     [SerializeField]
@@ -53,7 +53,15 @@ public class ShootTestAbility : Ability
             //instantiate
             GameObject projectile = Instantiate(throwPrefab, attackPoint.position, cam.rotation);
             //assign shooter
-            projectile.GetComponent<Bullet>().SetShooter(transform);
+            if (projectile.GetComponent<Bullet>())
+            {
+                projectile.GetComponent<Bullet>().SetShooter(transform);
+            }
+            if(projectile.GetComponent<PenetrateBullet>())
+            {
+                Debug.Log("ok");
+                projectile.GetComponent<PenetrateBullet>().SetShooter(transform);
+            }
             //get rigidbody
             Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
             //add force

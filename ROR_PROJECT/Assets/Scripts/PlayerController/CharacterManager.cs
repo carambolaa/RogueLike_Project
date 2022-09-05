@@ -13,6 +13,7 @@ public class CharacterManager : MonoBehaviour
     private float currentHp;
     private float Xp;
     private float Gold;
+    private float attackSpeed;
     private float playerBaseDamage;
     private float playerCurrentDamage;
     private float burningDamageMultiplier;
@@ -50,6 +51,7 @@ public class CharacterManager : MonoBehaviour
         playerCurrentDamage = playerBaseDamage;
         Xp = 0;
         Gold = 0;
+        attackSpeed = 10;
     }
 
     public void AddItem(string itemName)
@@ -88,6 +90,7 @@ public class CharacterManager : MonoBehaviour
         if(target.GetComponent<Enemy>().GetHealPercentage() >= 0.9f)
         {
             currentDamage += currentDamage * extraDamageMultiplier;
+            Debug.Log(currentDamage);
         }
         if(buffDamageMultiplier != 0)
         {
@@ -96,7 +99,6 @@ public class CharacterManager : MonoBehaviour
                 currentDamage *= buffDamageMultiplier;
             }
         }
-        //Debug.Log(currentDamage);
         return currentDamage;
     }
 
@@ -104,8 +106,9 @@ public class CharacterManager : MonoBehaviour
     {
         //check buff item
         var currentDamage = playerCurrentDamage * abilityDamageMultiplier;
+        currentDamage = CalculateItemDamageBuff(target, currentDamage);
         //calculate damage.deal damage
-        target.GetComponent<Enemy>().RevieveDamage(CalculateItemDamageBuff(target, currentDamage));
+        target.GetComponent<Enemy>().RevieveDamage(currentDamage);
         OnDealDamage?.Invoke(target, currentDamage);
     }
 

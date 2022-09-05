@@ -5,17 +5,27 @@ using UnityEngine.InputSystem;
 using System;
 
 public class PlayerMovement : MonoBehaviour
-{
+{ 
     /// <summary>
     /// Virutal Sript which contains basic movements of every character.
     /// Create unique character's script and inherite this script.
     /// </summary>
+
     [Header("Movement")]
     //Player control references
     protected Rigidbody m_Rigidbody;
     protected PlayerInputSystem m_InputSystem;
     protected Transform m_Orientation;
     protected Transform m_Camera;
+
+    private enum MovementState
+    {
+        Walking,
+        Running,
+        Air
+
+    }
+    private MovementState m_State;
 
     [Header("Ground Check")]
     [SerializeField]
@@ -35,6 +45,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     protected float moveSpeed;
     [SerializeField]
+    private float walkSpeed;
+    [SerializeField]
+    private bool isSprinting;
+    [SerializeField]
     protected float runSpeed;
     [SerializeField]
     protected float jumpForce;
@@ -48,6 +62,10 @@ public class PlayerMovement : MonoBehaviour
     protected float groundDrag;
     [SerializeField]
     protected float airDrag;
+    [SerializeField]
+    private float maxSlopeAngle;
+    private RaycastHit slopHit;
+    private bool exitingSlope;
 
     [Header("Debug")]
     [SerializeField]
@@ -71,6 +89,7 @@ public class PlayerMovement : MonoBehaviour
 
         m_InputSystem = new PlayerInputSystem();
         m_InputSystem.Player.Jump.performed += Jump;
+        m_InputSystem.Player.Sprint.performed += Sprint;
         m_InputSystem.Player.E.performed += Interact;
     }
 
@@ -78,24 +97,26 @@ public class PlayerMovement : MonoBehaviour
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        this.groundMultiplier = 9;
-        this.airMultiplier = 3;
-        this.moveSpeed = 6;
-        this.runSpeed = 9;
-        this.jumpForce = 9;
-        this.jumpCooldown = 0.25f;
-        this.groundDrag = 9;
+        //this.groundMultiplier = 10;
+        //this.airMultiplier = 3;
+        //this.moveSpeed = 6;
+        //this.runSpeed = 9;
+        //this.jumpForce = 9;
+        //this.jumpCooldown = 0.25f;
+        //this.groundDrag = 9;
     }
 
     protected virtual void Update()
     {
-        MyInput();
         GroundCheck();
-        DragControl();
+        MyInput();
         SpeedLimiter();
+        StateHandler();
+        DragControl();
+        //Debug.Log(m_Rigidbody.velocity.magnitude);
     }
 
-    protected virtual void FixedUpdate()
+    private void FixedUpdate()
     {
         Move();
     }
@@ -115,11 +136,17 @@ public class PlayerMovement : MonoBehaviour
         RaycastHit hit;
         if(Physics.Raycast(m_Camera.transform.position, m_Camera.forward, out hit, 10f))
         {
+            if(hit.transform.tag == "lootBox")
+            {
+                hit.transform.BroadcastMessage("Spawn");
+                return;
+            }
             if(hit.transform.tag == "item")
             {
                 var target = hit.transform.gameObject;
                 CharacterManager.Instance.AddItem(target.name);
                 Destroy(target);
+                return;
             }
         }
     }
@@ -152,13 +179,44 @@ public class PlayerMovement : MonoBehaviour
         }
         else if(!grounded)
         {
-            m_Rigidbody.drag = airDrag;
+            m_Rigidbody.drag = 0;
+        }
+    }
+
+    private void StateHandler()
+    {
+        if(isSprinting && grounded)
+        {
+            m_State = MovementState.Running;
+            moveSpeed = runSpeed;
+        }
+        else if(grounded)
+        {
+            m_State = MovementState.Walking;
+            moveSpeed = walkSpeed;
+        }
+        else
+        {
+            m_State = MovementState.Air;
+        }
+    }
+
+    private void Sprint(InputAction.CallbackContext context)
+    {
+        if(isSprinting)
+        {
+            isSprinting = false;
+        }
+        else
+        {
+            isSprinting = true;
         }
     }
 
     protected virtual void ResetJump()
     {
         readyToJump = true;
+        exitingSlope = false;
     }
 
     protected virtual void JumpCalculation()
@@ -169,6 +227,7 @@ public class PlayerMovement : MonoBehaviour
 
     protected virtual void Jump(InputAction.CallbackContext context)
     {
+        exitingSlope = true;
         if(readyToJump && grounded)
         {
             readyToJump = false;
@@ -180,8 +239,15 @@ public class PlayerMovement : MonoBehaviour
     protected virtual void Move()
     {
         moveDirection = m_Orientation.forward * verticalInput + m_Orientation.right * horizontalInput;
-
-        if(grounded)
+        if(OnSlope() && !exitingSlope)
+        {
+            m_Rigidbody.AddForce(GetSlopeMoveDirection() * moveSpeed * 20, ForceMode.Force);
+            if (m_Rigidbody.velocity.y > 0)
+            {
+                m_Rigidbody.AddForce(Vector3.down * 80, ForceMode.Force);
+            }
+        }
+        else if(grounded)
         {
             m_Rigidbody.AddForce(moveDirection.normalized * moveSpeed * groundMultiplier, ForceMode.Force);
         }
@@ -189,16 +255,42 @@ public class PlayerMovement : MonoBehaviour
         {
             m_Rigidbody.AddForce(moveDirection.normalized * moveSpeed * airMultiplier, ForceMode.Force);
         }
+        m_Rigidbody.useGravity = !OnSlope();
+    }
+
+    private bool OnSlope()
+    {
+        if(Physics.Raycast(transform.position, Vector3.down, out slopHit, playerHeight * 0.5f + 0.3f))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
+        }
+        return false;
+    }
+
+    private Vector3 GetSlopeMoveDirection()
+    {
+        return Vector3.ProjectOnPlane(moveDirection, slopHit.normal).normalized;
     }
 
     protected virtual void SpeedLimiter()
     {
-        Vector3 tempVel = new Vector3(m_Rigidbody.velocity.x, 0f, m_Rigidbody.velocity.z);
-        float targetSpeed = isRunning ? runSpeed : moveSpeed;
-        if(tempVel.magnitude > targetSpeed)
+        if(OnSlope() && !exitingSlope)
         {
-            Vector3 limitedVel = tempVel.normalized * targetSpeed;
-            m_Rigidbody.velocity = new Vector3(limitedVel.x, m_Rigidbody.velocity.y, limitedVel.z);
+            if(m_Rigidbody.velocity.magnitude > moveSpeed)
+            {
+                m_Rigidbody.velocity = m_Rigidbody.velocity.normalized * moveSpeed;
+            }
+        }
+        else
+        {
+            Vector3 tempVel = new Vector3(m_Rigidbody.velocity.x, 0f, m_Rigidbody.velocity.z);
+
+            if (tempVel.magnitude > moveSpeed)
+            {
+                Vector3 limitedVel = tempVel.normalized * moveSpeed;
+                m_Rigidbody.velocity = new Vector3(limitedVel.x, m_Rigidbody.velocity.y, limitedVel.z);
+            }
         }
     }
 }

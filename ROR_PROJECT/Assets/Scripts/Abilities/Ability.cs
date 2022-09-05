@@ -59,6 +59,10 @@ public class Ability : MonoBehaviour
 
     protected virtual void Ability_UI()
     {
+        if(abilityIcon == null)
+        {
+            return;
+        }
         if(isCooling)
         {
             abilityIcon.fillAmount = 1 - elapsed / cooldown;

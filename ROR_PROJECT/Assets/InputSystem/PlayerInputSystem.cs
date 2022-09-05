@@ -98,6 +98,15 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""176d2f6f-0444-453b-9e0a-6c2bf64753ff"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -232,6 +241,17 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                     ""action"": ""M2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""083dbf62-e6b5-4cc9-a842-b5af637f0f76"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -260,6 +280,7 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
         m_Player_R = m_Player.FindAction("R", throwIfNotFound: true);
         m_Player_M1 = m_Player.FindAction("M1", throwIfNotFound: true);
         m_Player_M2 = m_Player.FindAction("M2", throwIfNotFound: true);
+        m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -327,6 +348,7 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_R;
     private readonly InputAction m_Player_M1;
     private readonly InputAction m_Player_M2;
+    private readonly InputAction m_Player_Sprint;
     public struct PlayerActions
     {
         private @PlayerInputSystem m_Wrapper;
@@ -339,6 +361,7 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
         public InputAction @R => m_Wrapper.m_Player_R;
         public InputAction @M1 => m_Wrapper.m_Player_M1;
         public InputAction @M2 => m_Wrapper.m_Player_M2;
+        public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -372,6 +395,9 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                 @M2.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnM2;
                 @M2.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnM2;
                 @M2.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnM2;
+                @Sprint.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
+                @Sprint.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
+                @Sprint.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -400,6 +426,9 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                 @M2.started += instance.OnM2;
                 @M2.performed += instance.OnM2;
                 @M2.canceled += instance.OnM2;
+                @Sprint.started += instance.OnSprint;
+                @Sprint.performed += instance.OnSprint;
+                @Sprint.canceled += instance.OnSprint;
             }
         }
     }
@@ -423,5 +452,6 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
         void OnR(InputAction.CallbackContext context);
         void OnM1(InputAction.CallbackContext context);
         void OnM2(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
     }
 }

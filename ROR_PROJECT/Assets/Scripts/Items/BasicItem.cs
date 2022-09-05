@@ -7,7 +7,6 @@ public class BasicItem : Item
     private float burningPeriod = 1f;
     private float burningDamage = 1;
     private float burningDamageMultiplier;
-    private Coroutine currentCoroutine;
 
     protected override void Start()
     {
@@ -24,17 +23,14 @@ public class BasicItem : Item
     private void FeedBack(Transform enemy, float damage)
     {
         var target = enemy.GetComponent<Enemy>();
-        if (currentCoroutine != null)
-        {
-            target.StopCoroutine(currentCoroutine);
-        }
+        target.StopAllCoroutines();
         burningDamageMultiplier = CharacterManager.Instance.GetBurningDamageMultiplier();
         var currentBurningDamage = burningDamage;
         if (burningDamageMultiplier != 0)
         {
             currentBurningDamage *= burningDamageMultiplier;
         }
-        currentCoroutine = target.StartCoroutine(Burning(enemy, burningPeriod, currentBurningDamage));
+        target.StartCoroutine(Burning(enemy, burningPeriod, currentBurningDamage));
     }
 
     private IEnumerator Burning(Transform target, float periodTime, float dmg)
