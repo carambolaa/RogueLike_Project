@@ -5,14 +5,14 @@ using UnityEngine;
 public class BasicItem : Item
 {
     private float burningPeriod = 1f;
-    private float burningDamage = 1;
+    private float burningDamage;
     private float burningDamageMultiplier;
 
     protected override void Start()
     {
         base.Start();
         CharacterManager.Instance.OnRecieveDamage += Cast;
-        CharacterManager.Instance.OnDealDamage += FeedBack;
+        CharacterManager.Instance.OnEnemyKill += FeedBack;
     }
 
     private void Cast()
@@ -20,17 +20,27 @@ public class BasicItem : Item
         Debug.Log("Player got hit, heal!");
     }
 
-    private void FeedBack(Transform enemy, float damage)
+    private void FeedBack(Vector3 vec3)
     {
-        var target = enemy.GetComponent<Enemy>();
-        target.StopAllCoroutines();
-        burningDamageMultiplier = CharacterManager.Instance.GetBurningDamageMultiplier();
-        var currentBurningDamage = burningDamage;
-        if (burningDamageMultiplier != 0)
+        GameObject[] targets = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach(GameObject go in targets)
         {
-            currentBurningDamage *= burningDamageMultiplier;
+            float distance = Vector3.Distance(go.transform.position, vec3);
+            if(distance < 12)
+            {
+                var target = go.GetComponent<Enemy>();
+                //target.StopAllCoroutines();
+                burningDamageMultiplier = CharacterManager.Instance.GetBurningDamageMultiplier();
+                burningDamage = CharacterManager.Instance.GetPlayerCurrentDamage() * 1.5f * itemNumber;
+                var currentBurningDamage = burningDamage;
+                if (burningDamageMultiplier != 0)
+                {
+                    currentBurningDamage *= burningDamageMultiplier;
+                }
+                StartCoroutine(Burning(go.transform, burningPeriod, currentBurningDamage));
+            }
         }
-        target.StartCoroutine(Burning(enemy, burningPeriod, currentBurningDamage));
     }
 
     private IEnumerator Burning(Transform target, float periodTime, float dmg)

@@ -138,7 +138,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if(hit.transform.tag == "lootBox")
             {
-                hit.transform.BroadcastMessage("Spawn");
+                hit.transform.GetComponent<SpawnItem>()?.Spawn();
                 return;
             }
             if(hit.transform.tag == "item")

@@ -23,6 +23,7 @@ public class CharacterManager : MonoBehaviour
     //Events
     public event Action OnRecieveDamage;
     public event Action<Transform, float> OnDealDamage;
+    public event Action<Vector3> OnEnemyKill;
     public event Action<string> OnAddItem; //add new item
     public event Action<string> OnPlusItem; //add one item number
     public event Action<string> OnMinusItem; // minus one item number
@@ -52,6 +53,11 @@ public class CharacterManager : MonoBehaviour
         Xp = 0;
         Gold = 0;
         attackSpeed = 10;
+    }
+
+    public void EnemyKilled(Vector3 vec3)
+    {
+        OnEnemyKill?.Invoke(vec3);
     }
 
     public void AddItem(string itemName)
@@ -131,5 +137,10 @@ public class CharacterManager : MonoBehaviour
     public float GetBurningDamageMultiplier()
     {
         return burningDamageMultiplier;
+    }
+
+    public float GetPlayerCurrentDamage()
+    {
+        return playerCurrentDamage;
     }
 }
