@@ -33,7 +33,7 @@ public class PlayerCameraController : MonoBehaviour
         m_InputSystem.Player.Disable();
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         CameraRotate();
     }

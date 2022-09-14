@@ -10,7 +10,7 @@ public class CameraFollow : MonoBehaviour
     {
         cameraPosition = GameObject.Find("CameraPos").transform;
     }
-    private void Update()
+    private void LateUpdate()
     {
         transform.position = cameraPosition.position;
     }

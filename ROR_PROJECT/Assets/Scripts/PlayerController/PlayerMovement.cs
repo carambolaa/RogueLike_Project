@@ -66,6 +66,7 @@ public class PlayerMovement : MonoBehaviour
     private float maxSlopeAngle;
     private RaycastHit slopHit;
     private bool exitingSlope;
+    RaycastHit hit;
 
     [Header("Debug")]
     [SerializeField]
@@ -97,13 +98,6 @@ public class PlayerMovement : MonoBehaviour
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        //this.groundMultiplier = 10;
-        //this.airMultiplier = 3;
-        //this.moveSpeed = 6;
-        //this.runSpeed = 9;
-        //this.jumpForce = 9;
-        //this.jumpCooldown = 0.25f;
-        //this.groundDrag = 9;
     }
 
     protected virtual void Update()
@@ -134,7 +128,7 @@ public class PlayerMovement : MonoBehaviour
     private void Interact(InputAction.CallbackContext context)
     {
         RaycastHit hit;
-        if(Physics.Raycast(m_Camera.transform.position, m_Camera.forward, out hit, 10f))
+        if(Physics.Raycast(m_Camera.transform.position, m_Camera.forward, out hit, 3f))
         {
             if(hit.transform.tag == "lootBox")
             {
@@ -158,10 +152,18 @@ public class PlayerMovement : MonoBehaviour
         verticalInput = tempVec2.y;
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        if (Physics.SphereCast(transform.position, 1f, Vector3.down, out hit, playerHeight * 0.5f + groundCheckOffset, ground))
+        {
+            Gizmos.DrawWireSphere(hit.transform.position, 0.5f);
+        }
+    }
+
     protected virtual void GroundCheck()
     {
-        RaycastHit hit;
-        if(Physics.Raycast(transform.position, Vector3.down, out hit, playerHeight * 0.5f + groundCheckOffset, ground))
+        if(Physics.SphereCast(transform.position, 0.5f, Vector3.down, out hit, playerHeight * 0.25f + groundCheckOffset, ground))
         {
             grounded = true;
         }
@@ -169,11 +171,12 @@ public class PlayerMovement : MonoBehaviour
         {
             grounded = false;
         }
+        m_Rigidbody.useGravity = !OnSlope();
     }
 
     protected virtual void DragControl()
     {
-        if(grounded)
+        if (grounded)
         {
             m_Rigidbody.drag = groundDrag;
         }
@@ -227,10 +230,10 @@ public class PlayerMovement : MonoBehaviour
 
     protected virtual void Jump(InputAction.CallbackContext context)
     {
-        exitingSlope = true;
         if(readyToJump && grounded)
         {
             readyToJump = false;
+            exitingSlope = true;
             JumpCalculation();
             Invoke("ResetJump", jumpCooldown);
         }
@@ -239,9 +242,11 @@ public class PlayerMovement : MonoBehaviour
     protected virtual void Move()
     {
         moveDirection = m_Orientation.forward * verticalInput + m_Orientation.right * horizontalInput;
+
         if(OnSlope() && !exitingSlope)
         {
             m_Rigidbody.AddForce(GetSlopeMoveDirection() * moveSpeed * 20, ForceMode.Force);
+            Vector3 tempVel = new Vector3(m_Rigidbody.velocity.x, 0f, m_Rigidbody.velocity.z);
             if (m_Rigidbody.velocity.y > 0)
             {
                 m_Rigidbody.AddForce(Vector3.down * 80, ForceMode.Force);
@@ -255,7 +260,7 @@ public class PlayerMovement : MonoBehaviour
         {
             m_Rigidbody.AddForce(moveDirection.normalized * moveSpeed * airMultiplier, ForceMode.Force);
         }
-        m_Rigidbody.useGravity = !OnSlope();
+        
     }
 
     private bool OnSlope()

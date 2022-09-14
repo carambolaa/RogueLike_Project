@@ -4,55 +4,34 @@ using UnityEngine;
 
 public class BasicItem : Item
 {
-    private float burningPeriod = 1f;
-    private float burningDamage;
+    private float burningPeriod = 0.2f;
+    private float burningDamage = 3f;
+    [SerializeField]
+    private float burningRadius = 6f;
     private float burningDamageMultiplier;
 
     protected override void Start()
     {
         base.Start();
         CharacterManager.Instance.OnRecieveDamage += Cast;
-        CharacterManager.Instance.OnEnemyKill += FeedBack;
+        CharacterManager.Instance.OnEnemyKill += Burn;
     }
 
     private void Cast()
     {
         Debug.Log("Player got hit, heal!");
+        CharacterManager.Instance.RecieveHealing(5);
     }
 
-    private void FeedBack(Vector3 vec3)
+    private void Burn(Vector3 vec3)
     {
-        GameObject[] targets = GameObject.FindGameObjectsWithTag("Enemy");
-
-        foreach(GameObject go in targets)
+        Collider[] hitColliders = Physics.OverlapSphere(vec3, burningRadius);
+        foreach (var hitCollider in hitColliders)
         {
-            float distance = Vector3.Distance(go.transform.position, vec3);
-            if(distance < 12)
+            if (hitCollider.transform.tag == "Enemy")
             {
-                var target = go.GetComponent<Enemy>();
-                //target.StopAllCoroutines();
-                burningDamageMultiplier = CharacterManager.Instance.GetBurningDamageMultiplier();
-                burningDamage = CharacterManager.Instance.GetPlayerCurrentDamage() * 1.5f * itemNumber;
-                var currentBurningDamage = burningDamage;
-                if (burningDamageMultiplier != 0)
-                {
-                    currentBurningDamage *= burningDamageMultiplier;
-                }
-                StartCoroutine(Burning(go.transform, burningPeriod, currentBurningDamage));
+                hitCollider.transform.GetComponent<Enemy>().StartBurning(burningDamage);
             }
-        }
-    }
-
-    private IEnumerator Burning(Transform target, float periodTime, float dmg)
-    {
-        var enemy = target.GetComponent<Enemy>();
-        enemy.SetIsBurning(true);
-        var countDown = 5f;
-        while (countDown >= 0 && enemy.GetIsBurning())
-        {
-            countDown -= periodTime;
-            enemy.RevieveDamage(dmg);
-            yield return new WaitForSeconds(periodTime);
         }
     }
 }

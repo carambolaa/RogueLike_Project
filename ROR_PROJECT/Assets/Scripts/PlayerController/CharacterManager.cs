@@ -2,13 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
+using TMPro;
 
 public class CharacterManager : MonoBehaviour
 {
     public static CharacterManager Instance { get; private set; }
     private Dictionary<string, int> m_Inventory = new Dictionary<string, int>();
+    private Image healthBar;
+    private TextMeshProUGUI GoldHolding;
 
     //properties
+    private string charater;
     private float baseHp;
     private float currentHp;
     private float Xp;
@@ -22,6 +27,7 @@ public class CharacterManager : MonoBehaviour
 
     //Events
     public event Action OnRecieveDamage;
+    public event Action OnRecieveHealing;
     public event Action<Transform, float> OnDealDamage;
     public event Action<Vector3> OnEnemyKill;
     public event Action<string> OnAddItem; //add new item
@@ -38,10 +44,28 @@ public class CharacterManager : MonoBehaviour
         {
             Instance = this;
         }
+
+        GoldHolding = GameObject.Find("Gold").GetComponent<TextMeshProUGUI>();
+        healthBar = GameObject.Find("Health").GetComponent<Image>();
+        charater = GameManager.instance?.GetCharacter();
+        SetAbilities();
     }
+
     private void Start()
     {
         ResetBasicValues();
+    }
+
+    public void SetAbilities()
+    {
+        if(charater == "Commander")
+        {
+            Debug.Log("I'm commander");
+        }
+        else if(charater == "Ashe")
+        {
+            Debug.Log("I'm Ashe");
+        }
     }
 
     public void ResetBasicValues()
@@ -96,7 +120,6 @@ public class CharacterManager : MonoBehaviour
         if(target.GetComponent<Enemy>().GetHealPercentage() >= 0.9f)
         {
             currentDamage += currentDamage * extraDamageMultiplier;
-            Debug.Log(currentDamage);
         }
         if(buffDamageMultiplier != 0)
         {
@@ -121,7 +144,15 @@ public class CharacterManager : MonoBehaviour
     public void RecieveDamage(float damage)
     {
         this.currentHp -= damage;
+        healthBar.fillAmount = currentHp / baseHp;
         OnRecieveDamage?.Invoke();
+    }
+
+    public void RecieveHealing(float amount)
+    {
+        this.currentHp += amount;
+        healthBar.fillAmount = currentHp / baseHp;
+        OnRecieveHealing?.Invoke();
     }
 
     public void SetExtraDamage(float extraDamageMultiplier)
@@ -142,5 +173,22 @@ public class CharacterManager : MonoBehaviour
     public float GetPlayerCurrentDamage()
     {
         return playerCurrentDamage;
+    }
+
+    public float GetGold()
+    {
+        return Gold;
+    }
+
+    public void AddGold(float amount)
+    {
+        Gold += amount;
+        GoldHolding.text = "Gold : " + Gold;
+    }
+
+    public void MinusGold(float amount)
+    {
+        Gold -= amount;
+        GoldHolding.text = "Gold : " + Gold;
     }
 }
