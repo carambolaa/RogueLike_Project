@@ -107,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
         SpeedLimiter();
         StateHandler();
         DragControl();
-        //Debug.Log(m_Rigidbody.velocity.magnitude);
+        Debug.Log(m_Rigidbody.velocity.magnitude);
     }
 
     private void FixedUpdate()
@@ -280,21 +280,24 @@ public class PlayerMovement : MonoBehaviour
 
     protected virtual void SpeedLimiter()
     {
-        if(OnSlope() && !exitingSlope)
+        if(!CharacterManager.Instance.GetIsDashing())
         {
-            if(m_Rigidbody.velocity.magnitude > moveSpeed)
+            if (OnSlope() && !exitingSlope)
             {
-                m_Rigidbody.velocity = m_Rigidbody.velocity.normalized * moveSpeed;
+                if (m_Rigidbody.velocity.magnitude > moveSpeed)
+                {
+                    m_Rigidbody.velocity = m_Rigidbody.velocity.normalized * moveSpeed;
+                }
             }
-        }
-        else
-        {
-            Vector3 tempVel = new Vector3(m_Rigidbody.velocity.x, 0f, m_Rigidbody.velocity.z);
-
-            if (tempVel.magnitude > moveSpeed)
+            else
             {
-                Vector3 limitedVel = tempVel.normalized * moveSpeed;
-                m_Rigidbody.velocity = new Vector3(limitedVel.x, m_Rigidbody.velocity.y, limitedVel.z);
+                Vector3 tempVel = new Vector3(m_Rigidbody.velocity.x, 0f, m_Rigidbody.velocity.z);
+
+                if (tempVel.magnitude > moveSpeed)
+                {
+                    Vector3 limitedVel = tempVel.normalized * moveSpeed;
+                    m_Rigidbody.velocity = new Vector3(limitedVel.x, m_Rigidbody.velocity.y, limitedVel.z);
+                }
             }
         }
     }

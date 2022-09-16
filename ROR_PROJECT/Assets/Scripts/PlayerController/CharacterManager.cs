@@ -24,6 +24,7 @@ public class CharacterManager : MonoBehaviour
     private float burningDamageMultiplier;
     private float extraDamageMultiplier; //crowbar's extra damage
     private float buffDamageMultiplier; //crystal's buff damage
+    private bool isDashing;
 
     //Events
     public event Action OnRecieveDamage;
@@ -167,6 +168,10 @@ public class CharacterManager : MonoBehaviour
 
     public float GetBurningDamageMultiplier()
     {
+        if(burningDamageMultiplier <= 0)
+        {
+            burningDamageMultiplier = 1;
+        }
         return burningDamageMultiplier;
     }
 
@@ -190,5 +195,15 @@ public class CharacterManager : MonoBehaviour
     {
         Gold -= amount;
         GoldHolding.text = "Gold : " + Gold;
+    }
+
+    public void SetIsDashing(bool bo)
+    {
+        isDashing = bo;
+    }
+
+    public bool GetIsDashing()
+    {
+        return isDashing;
     }
 }

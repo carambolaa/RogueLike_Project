@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BasicItem : Item
 {
-    private float burningPeriod = 0.2f;
     private float burningDamage = 3f;
     [SerializeField]
     private float burningRadius = 6f;
@@ -30,7 +29,7 @@ public class BasicItem : Item
         {
             if (hitCollider.transform.tag == "Enemy")
             {
-                hitCollider.transform.GetComponent<Enemy>().StartBurning(burningDamage);
+                hitCollider.transform.GetComponent<Enemy>().StartBurning(burningDamage * CharacterManager.Instance.GetBurningDamageMultiplier());
             }
         }
     }

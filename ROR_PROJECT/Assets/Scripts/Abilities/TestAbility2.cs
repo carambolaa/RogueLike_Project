@@ -25,16 +25,23 @@ public class TestAbility2 : Ability
         Ability_UI();
     }
 
+    private void ResetDash()
+    {
+        CharacterManager.Instance.SetIsDashing(false);
+    }
+
     private void Cast(InputAction.CallbackContext context)
     {
         if(!isCooling)
         {
+            CharacterManager.Instance.SetIsDashing(true);
             isCooling = true;
             elapsed = 0;
             //dash
             Vector3 dashDirection = orientation.transform.forward;
             var temp = GetComponent<Rigidbody>();
             temp.AddForce(dashDirection * dashForce, ForceMode.Impulse);
+            Invoke("ResetDash", 0.1f);
         }
     }
 }
