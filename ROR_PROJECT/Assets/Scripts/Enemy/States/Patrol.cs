@@ -63,8 +63,11 @@ public class Patrol : BaseState
             //find the vector pointing from our position to the target
             direction = (currentTarget - _sm.transform.position).normalized;
 
-            //create the rotation we need to be in to look at the target
-            lookRotation = Quaternion.LookRotation(direction);
+            if(direction != Vector3.zero)
+            {
+                //create the rotation we need to be in to look at the target
+                lookRotation = Quaternion.LookRotation(direction);
+            }
 
             //rotate us over time according to speed until we are in the required rotation
             _sm.transform.rotation = Quaternion.Slerp(_sm.transform.rotation, lookRotation, Time.deltaTime * RotationSpeed);

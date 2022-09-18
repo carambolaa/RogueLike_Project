@@ -107,6 +107,15 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TAB"",
+                    ""type"": ""Button"",
+                    ""id"": ""70e25f4a-7305-4ead-96a4-fd3835184b81"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -252,6 +261,17 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""15ed95f5-be57-4b6d-a7f2-43f3cbbe50cd"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": ""Hold"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TAB"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -281,6 +301,7 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
         m_Player_M1 = m_Player.FindAction("M1", throwIfNotFound: true);
         m_Player_M2 = m_Player.FindAction("M2", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
+        m_Player_TAB = m_Player.FindAction("TAB", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -349,6 +370,7 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_M1;
     private readonly InputAction m_Player_M2;
     private readonly InputAction m_Player_Sprint;
+    private readonly InputAction m_Player_TAB;
     public struct PlayerActions
     {
         private @PlayerInputSystem m_Wrapper;
@@ -362,6 +384,7 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
         public InputAction @M1 => m_Wrapper.m_Player_M1;
         public InputAction @M2 => m_Wrapper.m_Player_M2;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
+        public InputAction @TAB => m_Wrapper.m_Player_TAB;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -398,6 +421,9 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                 @Sprint.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
                 @Sprint.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
                 @Sprint.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
+                @TAB.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTAB;
+                @TAB.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTAB;
+                @TAB.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTAB;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -429,6 +455,9 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
                 @Sprint.started += instance.OnSprint;
                 @Sprint.performed += instance.OnSprint;
                 @Sprint.canceled += instance.OnSprint;
+                @TAB.started += instance.OnTAB;
+                @TAB.performed += instance.OnTAB;
+                @TAB.canceled += instance.OnTAB;
             }
         }
     }
@@ -453,5 +482,6 @@ public partial class @PlayerInputSystem : IInputActionCollection2, IDisposable
         void OnM1(InputAction.CallbackContext context);
         void OnM2(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnTAB(InputAction.CallbackContext context);
     }
 }

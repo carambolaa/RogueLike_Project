@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     protected PlayerInputSystem m_InputSystem;
     protected Transform m_Orientation;
     protected Transform m_Camera;
+    private GameObject inventory_UI;
 
     private enum MovementState
     {
@@ -87,17 +88,21 @@ public class PlayerMovement : MonoBehaviour
 
         m_Orientation = GameObject.Find("Orientation").transform;
         m_Camera = GameObject.Find("Main Camera").transform;
+        inventory_UI = GameObject.Find("InventoryBackground");
 
         m_InputSystem = new PlayerInputSystem();
         m_InputSystem.Player.Jump.performed += Jump;
         m_InputSystem.Player.Sprint.performed += Sprint;
         m_InputSystem.Player.E.performed += Interact;
+        m_InputSystem.Player.TAB.started += context => { inventory_UI.SetActive(true); };
+        m_InputSystem.Player.TAB.canceled += context => { inventory_UI.SetActive(false); };
     }
 
     private void Start()
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        inventory_UI.SetActive(false);
     }
 
     protected virtual void Update()

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Enemy : MonoBehaviour, IBurnable
 {
     private float baseHp = 200;
+    private float baseDamage = 15;
     private float currentHp;
     private bool isBurning;
     private float goldHolding;
@@ -104,5 +105,10 @@ public class Enemy : MonoBehaviour, IBurnable
             length--;
         }
         StopBurning();
+    }
+
+    public float GetDamage()
+    {
+        return baseDamage;
     }
 }

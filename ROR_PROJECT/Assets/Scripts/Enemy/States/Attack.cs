@@ -10,6 +10,10 @@ public class Attack : BaseState
     private Quaternion lookRotation;
     private float RotationSpeed = 7;
 
+    private float elapsedTime = 0f;
+    public float period = 2f;
+    private bool attackCooling;
+
     public Attack(MovementSM stateMachine) : base("Attack", stateMachine)
     {
         _sm = stateMachine;
@@ -29,6 +33,21 @@ public class Attack : BaseState
         if (Vector3.Distance(_sm.player.position, _sm.transform.position) > 13)
         {
             stateMachine.ChangeState(_sm.chaseState);
+        }
+
+        if (!attackCooling)
+        {
+            elapsedTime = 0;
+            _sm.Shoot();
+            attackCooling = true;
+        }
+        else
+        {
+            elapsedTime += Time.deltaTime;
+            if(elapsedTime >= period)
+            {
+                attackCooling = false;
+            }
         }
     }
 

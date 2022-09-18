@@ -14,6 +14,7 @@ public class MovementSM : StateMachine
     public Rigidbody rb;
     public Transform player;
     public float moveSpeed = 4;
+    public GameObject bulletPrefab;
 
     private void Awake()
     {
@@ -27,5 +28,11 @@ public class MovementSM : StateMachine
     protected override BaseState GetInitialState()
     {
         return patrolState;
+    }
+
+    public void Shoot()
+    {
+        GameObject bullet = Instantiate(bulletPrefab, transform.position + transform.forward, Quaternion.identity);
+        bullet.GetComponent<Rigidbody>().AddForce(transform.forward * 80, ForceMode.Impulse);
     }
 }

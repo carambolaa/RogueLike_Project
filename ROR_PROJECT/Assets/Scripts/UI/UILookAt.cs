@@ -16,7 +16,7 @@ public class UILookAt : MonoBehaviour
         if (gameObject.activeSelf == true)
         {
             this.transform.LookAt(transform.position + mainCamera.rotation * Vector3.forward, mainCamera.rotation * Vector3.up);
-            float currentSize = 0.007f * Vector3.Distance(mainCamera.position, this.transform.position) / 6;
+            float currentSize = 0.003f * Vector3.Distance(mainCamera.position, this.transform.position) / 6;
             this.transform.localScale = new Vector3(currentSize, currentSize, currentSize);
         }
     }

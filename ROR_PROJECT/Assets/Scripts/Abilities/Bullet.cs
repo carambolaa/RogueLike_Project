@@ -10,7 +10,7 @@ public class Bullet: MonoBehaviour
 
     private void Awake()
     {
-        Invoke("DestroyBullet", 11);
+        Invoke("DestroyBullet", 7);
     }
 
     private void DestroyBullet()
@@ -23,11 +23,11 @@ public class Bullet: MonoBehaviour
         shooter = player;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if(other.tag == "Enemy")
+        if (collision.transform.tag == "Enemy")
         {
-            enemy = other.transform;
+            enemy = collision.transform;
             shooter.GetComponent<CharacterManager>()?.DealDamage(enemy, damageMultiplierBase);
             Destroy(this.gameObject);
         }

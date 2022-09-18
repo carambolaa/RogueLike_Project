@@ -73,11 +73,13 @@ public class CharacterManager : MonoBehaviour
     {
         baseHp = 200;
         currentHp = baseHp;
-        playerBaseDamage = 10;
+        playerBaseDamage = 20;
         playerCurrentDamage = playerBaseDamage;
         Xp = 0;
         Gold = 0;
         attackSpeed = 10;
+        GoldHolding.text = "Gold : " + Gold;
+        healthBar.fillAmount = currentHp / baseHp;
     }
 
     public void EnemyKilled(Vector3 vec3)
@@ -103,6 +105,11 @@ public class CharacterManager : MonoBehaviour
             m_Inventory.Add(itemName, 1);
             OnAddItem?.Invoke(itemName);
         }
+    }
+
+    public Dictionary<string, int> GetInventoryDictionary()
+    {
+        return m_Inventory;
     }
 
     public void MinusItem(string itemName)
