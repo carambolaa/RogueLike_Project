@@ -133,7 +133,7 @@ public class PlayerMovement : MonoBehaviour
     private void Interact(InputAction.CallbackContext context)
     {
         RaycastHit hit;
-        if(Physics.Raycast(m_Camera.transform.position, m_Camera.forward, out hit, 3f))
+        if(Physics.Raycast(m_Camera.transform.position, m_Camera.forward, out hit, 4.5f))
         {
             if(hit.transform.tag == "lootBox")
             {
